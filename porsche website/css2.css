@@ -1,0 +1,8 @@
+.top button:hover{
+    background-color: blue;
+    color:white; 
+}
+
+button:nth-of-type(2n){
+  color: red; 
+}

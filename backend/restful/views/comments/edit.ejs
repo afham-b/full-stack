@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDIT</title>
+</head>
+<body>
+    <h1> Edit Existing Comment </h1>
+
+    <form method="post" action="/comments/<%=comment.id%>?_method=PATCH" >
+
+        <section>
+        <label for="comment"> Update Comment: </label>
+        <br>
+        <textarea name="comment" id="comment" cols="35" rows="5">
+            <%= comment.comment %> 
+        </textarea>
+        </section>
+
+        <button> Save </button>
+
+    </form>
+
+    <a href="/comments"> Back to Index Page</a>
+    
+</body>
+</html>

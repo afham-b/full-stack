@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Edit Product </title>
+</head>
+<body>
+    <h1> Edit Product</h1>
+    <form action="/inventory/<%=product._id%>?_method=PUT" method="POST">  
+
+        <label for="name"> Product Name</label>
+        <input type="text" name="name" id="name" placeholder="product name" value="<%=product.name%> ">
+        
+        <label for="price"> Enter Price</label>
+        <input type="text" name="price" id="price" placeholder="product price" value="<%=product.price%> ">
+
+        <label for="category"> Enter Applicable Categories</label>
+        <input type="text" name="category" id="category" placeholder="product Category">
+
+        <button>Submit</button>
+
+    </form>
+</body>
+</html>
