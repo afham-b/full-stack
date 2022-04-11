@@ -7,8 +7,9 @@
     <title> Create New Product </title>
 </head>
 <body>
-    <h1> Add Product</h1>
-    <form action="/inventory" method="POST">  
+    <h1> <%=farm.name%> </h1>
+    <h2> Add Product to Inventory</h2>
+    <form action="/farms/<%=farm._id%>/inventory" method="POST">  
 
         <label for="name"> Product Name</label>
         <input type="text" name="name" id="name" placeholder="product name">
@@ -22,5 +23,7 @@
         <button>Submit</button>
 
     </form>
+
+    <a href="/farms/<%=farm._id%>">Back To Farm</a>
 </body>
 </html>

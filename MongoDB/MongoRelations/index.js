@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const methodOverride = require('method-override'); 
+const methodOverride = require('method-override');
 const mongoose = require('mongoose');  
 
 const Product = require('./models/product'); 
@@ -21,7 +21,7 @@ mongoose.connect('mongodb://localhost:27017/inventory&farms').
 app.set('views', path.join(__dirname,'views'));
 app.set('view engine','ejs');
 app.use(express.urlencoded({extended: true}))
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method')); 
 
 //FARM ROUTES 
 
@@ -35,14 +35,43 @@ app.get('/farms/new', (req,res) => {
 })
 
 app.get('/farms/:id', async (req,res) => {
-    const farm = await Farm.findById(req.params.id); 
+    const farm = await Farm.findById(req.params.id).populate('products'); 
+    console.log(farm); 
     res.render('farms/show', {farm});
+})
+
+app.delete('/farms/:id', async (req,res) => {
+    const farm = await Farm.findByIdAndDelete(req.params.id); 
+    res.redirect('/farms');
 })
 
 app.post('/farms', async (req,res) => {
     const farm = new Farm(req.body); 
     await farm.save(); 
     res.redirect('/farms'); 
+})
+
+app.get('/farms/:id/inventory/new', async (req,res) => {
+    const { id } = req.params; 
+    const farm = await Farm.findById(id);
+    res.render('products/new', {farm} ); 
+})
+app.post('/farms/:id/inventory', async (req,res) => {
+    //use id to farm 
+    const { id } = req.params; 
+    const farm = await Farm.findById(id);
+    //destruct and create new product object 
+    const { name, price, category} = req.body;  
+    const product = new Product({ name, price, category});
+    //push products onto the farm 
+    farm.products.push(product); 
+    //linking the farm attribute of product to the farm we found by id
+    product.farm = farm; 
+    //save the farm & then save the products 
+    await farm.save();
+    await product.save();
+    //now we redirect user to the farm/:_id by using the id 
+    res.redirect(`/farms/${id}`);  
 })
 
 //Product Routes 
@@ -62,12 +91,12 @@ app.get('/inventory', async (req,res) => {
 })
 
 app.get('/inventory/new', (req, res) => {
-    res.render('products/new', {categories}); 
+    res.render('products/new', {category}); 
 })
 
 app.get('/inventory/:id', async (req,res) => {
     const { id } = req.params; //takes id from url request
-    const product = await Product.findById(id);  
+    const product = await Product.findById(id).populate('farm', 'name'); 
     res.render('products/show', {product}); 
 })
 
