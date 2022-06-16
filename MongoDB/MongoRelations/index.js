@@ -9,6 +9,19 @@ const Farm= require('./models/farm');
 const { query } = require('express');
 const { request } = require('http');
 
+//connect flash requires sessions and cookies 
+const session = require('express-session'); 
+//resave false & save Uninitialized : false helps us avoid a deprecation error 
+const sessionOptions = {secret: 'ThisIsntAgoodSecret' , resave : false, saveUninitialized: false}; 
+app.use(session(sessionOptions)); 
+//connect flash added below 
+const flash = require('connect-flash');
+const { nextTick } = require('process');
+app.use(flash()); 
+
+ 
+
+
 mongoose.connect('mongodb://localhost:27017/inventory&farms').
     then( () => {
         console.log("Mongo connection Open")
@@ -24,10 +37,14 @@ app.use(express.urlencoded({extended: true}))
 app.use(methodOverride('_method')); 
 
 //FARM ROUTES 
+app.use((req,res, next) => {
+    res.locals.messages = req.flash('sucess'); 
+    next(); 
+})
 
 app.get('/farms' , async (req,res) => {
     const farms = await Farm.find({}); 
-    res.render('farms/index', {farms })
+    res.render('farms/index', {farms}); 
 })
 
 app.get('/farms/new', (req,res) => {
@@ -48,6 +65,7 @@ app.delete('/farms/:id', async (req,res) => {
 app.post('/farms', async (req,res) => {
     const farm = new Farm(req.body); 
     await farm.save(); 
+    req.flash('sucess', 'sucessfully made a new farm!');  
     res.redirect('/farms'); 
 })
 
